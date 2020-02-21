@@ -13,6 +13,12 @@ namespace FirstBankOfSuncoast
 
 
     //Methods
+    public void LoadAccounts()
+    {
+      var reader = new StreamReader("account.csv");
+      var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+      Accounts = csvReader.GetRecords<Account>().ToList();
+    }
     public void Save()
     {
       var writer = new StreamWriter("account.csv");
@@ -20,6 +26,7 @@ namespace FirstBankOfSuncoast
       csvWriter.WriteRecords(Accounts);
       writer.Flush();
     }
+
     public void Display()
     {
       foreach (var b in Accounts)
@@ -29,34 +36,61 @@ namespace FirstBankOfSuncoast
     }
     public void Deposit(string name, int amount)
     {
-      var deposit = Accounts.First(name => Accounts.Contains(name)).Balance;
+      var deposit = Accounts.First(account => account.Name == name).Balance;
       deposit += amount;
+      Accounts.First(account => account.Name == name).Balance = deposit;
       Console.WriteLine($"Your {name} account has a new balance of {deposit}");
       Save();
     }
     public void Withdraw(string withdrawName, int witdrawAmount)
     {
-      var withdraw = Accounts.First(withdrawName => Accounts.Contains(withdrawName)).Balance;
+      var withdraw = Accounts.First(account => account.Name == withdrawName).Balance;
       withdraw -= witdrawAmount;
+      Accounts.First(account => account.Name == withdrawName).Balance = withdraw;
       Console.WriteLine($"Your {withdrawName} has a new balance of {withdraw}");
       Save();
     }
     public void Transfer(string from, int tAmount)
     {
-      var takerBalance = Accounts.First(from => Accounts.Contains(from)).Balance;
-      var giverBalance = Accounts.First(from => !Accounts.Contains(from)).Balance;
-      var takerName = Accounts.First(from => Accounts.Contains(from));
-      var giverName = Accounts.First(from => !Accounts.Contains(from));
-      takerBalance += tAmount;
-      giverBalance -= tAmount;
-      Console.WriteLine($"You transferred {tAmount} from {giverName} to {takerName}");
-      Console.WriteLine($"Your Balance in {takerName} is no {takerBalance}");
-      Console.WriteLine($"Your Balance in {giverName} is no {takerName}");
-      Save();
+
+      if (from == "checking")
+      {
+        var takerName = Accounts.First(account => account.Name == from);
+        var takerBalance = Accounts.First(account => account.Name == from).Balance;
+        var giverName = Accounts.First(to => to.Name == "saving");
+        var giverBalance = Accounts.First(to => to.Name == "saving").Balance;
+        takerBalance += tAmount;
+        Accounts.First(account => account.Name == from).Balance = takerBalance;
+        giverBalance -= tAmount;
+        Accounts.First(to => to.Name == "saving").Balance = giverBalance;
+        Console.WriteLine($"You transferred {tAmount} from {from} to saving");
+        Console.WriteLine($"Your new {from} balance is {takerBalance}");
+        Console.WriteLine($"Your new saving balance is {giverBalance}");
+        Save();
+      }
+      else if (from == "saving")
+      {
+        var takerName = Accounts.First(account => account.Name == from);
+        var takerBalance = Accounts.First(account => account.Name == from).Balance;
+        var giverName = Accounts.First(to => to.Name == "checking");
+        var giverBalance = Accounts.First(to => to.Name == "checking").Balance;
+        takerBalance += tAmount;
+        Accounts.First(account => account.Name == from).Balance = takerBalance;
+        giverBalance -= tAmount;
+        Accounts.First(to => to.Name == "checking").Balance = giverBalance;
+        Console.WriteLine($"You transferred {tAmount} from {from} to saving");
+        Console.WriteLine($"Your new {from} balance is {takerBalance}");
+        Console.WriteLine($"Your new checking balance is {giverBalance}");
+        Save();
+      }
+
 
     }
 
   }
-
-
 }
+
+
+
+
+
