@@ -35,32 +35,37 @@ namespace FirstBankOfSuncoast
       while (empty)
       {
         Console.WriteLine("Welcome to the First Bank of Suncoast.");
+        //create existing or new use?
         Console.WriteLine("Do you have an existing account with us? Yes(Y) or no(n)?");
-
         var createNew = Console.ReadLine().ToLower();
-        if (createNew == "y")
+        //if new user
+        if (createNew == "n")
         {
-          Console.WriteLine("(CHECKING) or (SAVING)?");
-          var name = Console.ReadLine().ToLower();
-          if (name != "checking" && name != "saving")
+          if (createNew != "y" && createNew != "n")
           {
-            Console.WriteLine("Firs Bank of Suncoast doesn't offer that type of account.");
-            Console.WriteLine("Please select (CHECKING) or (SAVING)");
-            name = Console.ReadLine().ToLower();
+            Console.Write("Invalid input. Please select (Y) or (N) ");
+            createNew = Console.ReadLine().ToLower();
           }
-          else
+          //Account creation
+          else if (createNew == "n")
           {
-            Console.WriteLine("How much?");
-            var balance = int.Parse(Console.ReadLine());
-            tracker.NewAccount(name, balance);
+            //pick username
+            Console.WriteLine("Please type in a username:");
+            var userName = Console.ReadLine().ToLower();
+            //checks if username exists and asks you to pick a different username if it does
+            tracker.NameChecker(userName);
+            //dep
+            Console.WriteLine("How much do you want to deposit into your checking account?");
+            var checkingBalance = int.Parse(Console.ReadLine());
+            Console.WriteLine("How much do you want to deposit into your saving account? If you don't want to deposit into a saving account input zero");
+            var savingBalance = int.Parse(Console.ReadLine());
+            tracker.NewAccount(userName, checkingBalance, savingBalance);
           }
+
         }
-        else
-        {
-          Console.WriteLine("Looks like you have an existing account");
-          empty = false;
-        }
+
       }
+
 
       tracker.LoadAccounts();
       tracker.Display();
