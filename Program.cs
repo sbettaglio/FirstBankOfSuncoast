@@ -30,7 +30,8 @@ namespace FirstBankOfSuncoast
       // accounts.Add(new Account { Name = "checking", Balance = 500 });
       // accounts.Add(new Account { Name = "saving", Balance = 500 });
 
-
+      tracker.LoadAccounts();
+      var userName = "";
       var empty = true;
       while (empty)
       {
@@ -51,35 +52,44 @@ namespace FirstBankOfSuncoast
           {
             //pick username
             Console.WriteLine("Please type in a username:");
-            var userName = Console.ReadLine().ToLower();
+            userName = Console.ReadLine().ToLower();
             //checks if username exists and asks you to pick a different username if it does
             tracker.NameChecker(userName);
-            //dep
+            //deposit into respective accounts
             Console.WriteLine("How much do you want to deposit into your checking account?");
             var checkingBalance = int.Parse(Console.ReadLine());
             Console.WriteLine("How much do you want to deposit into your saving account? If you don't want to deposit into a saving account input zero");
             var savingBalance = int.Parse(Console.ReadLine());
             tracker.NewAccount(userName, checkingBalance, savingBalance);
+            empty = false;
           }
-
         }
+        else if (createNew == "y")
+        {
+          //existing user login
+          Console.WriteLine("What is your username?");
+          userName = Console.ReadLine().ToLower();
+          tracker.LogIn(userName);
+          empty = false;
+        }
+
+
 
       }
 
-
-      tracker.LoadAccounts();
-      tracker.Display();
+      //displays just the logged in user's balance
+      tracker.Display(userName);
 
       var moneyInTheBank = true;
       while (moneyInTheBank)
       {
         tracker.LoadAccounts();
         //What do you want to do with your Money?
-        Console.WriteLine("Do you want to deposit(D), withdraw(W) or transfer(T)");
+        Console.WriteLine("Do you want to deposit(D), withdraw(W) or transfer(T) or (QUIT) ");
         var input = Console.ReadLine().ToLower();
         if (input != "d" && input != "w" && input != "t" && input != "quit")
         {
-          Console.WriteLine("Incorrect input. Please input (D), (W) or (T) ");
+          Console.WriteLine("Incorrect input. Please input (D), (W), (T) or (QUIT) ");
           input = Console.ReadLine().ToLower();
         }
         else if (input == "d")
@@ -97,7 +107,7 @@ namespace FirstBankOfSuncoast
           Console.WriteLine("How much do you want to deposit?");
           var amount = int.Parse(Console.ReadLine());
           //tracker.AddNewTransaction(deposit, name, amount);
-          tracker.Deposit(name, amount);
+          tracker.Deposit(userName, name, amount);
           Console.WriteLine("********************************************************");
 
         }
@@ -115,7 +125,7 @@ namespace FirstBankOfSuncoast
           }
           Console.WriteLine("How much do you want to withdraw?");
           var withdrawAmount = int.Parse(Console.ReadLine());
-          tracker.Withdraw(withdrawName, withdrawAmount);
+          tracker.Withdraw(userName, withdrawName, withdrawAmount);
           //tracker.AddNewTransaction(withdraw, withdrawName, withdrawAmount);
           Console.WriteLine("********************************************************");
 
@@ -134,7 +144,7 @@ namespace FirstBankOfSuncoast
           }
           Console.WriteLine("How much do you want to transfer?");
           var tAmount = int.Parse(Console.ReadLine());
-          tracker.Transfer(from, tAmount);
+          tracker.Transfer(userName, from, tAmount);
           //tracker.AddNewTransaction(transaction, from, tAmount);
           Console.WriteLine("********************************************************");
 
