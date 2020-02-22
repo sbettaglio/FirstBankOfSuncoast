@@ -11,13 +11,43 @@ namespace FirstBankOfSuncoast
   {
     public List<Account> Accounts { get; set; } = new List<Account>();
 
+    public List<Transaction> Transactions { get; set; } = new List<Transaction>();
+
 
     //Methods
+
+    public void LoadTransactions()
+    {
+      var reader = new StreamReader("transactions.csv");
+      var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+      Transactions = csvReader.GetRecords<Transaction>().ToList();
+    }
+    public void SaveTransactions()
+    {
+      var writer = new StreamWriter("transactions.csv");
+      var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
+      csvWriter.WriteRecords(Transactions);
+      writer.Flush();
+    }
+    public void AddNewTransaction(string type, string whatAccount, int whatAmount)
+    {
+      var transaction = new Transaction
+      {
+        Type = type,
+        WhatAccount = whatAccount,
+        Amount = whatAmount,
+        When = DateTime.Now
+
+      };
+      Transactions.Add(transaction);
+      SaveTransactions();
+    }
     public void LoadAccounts()
     {
       var reader = new StreamReader("account.csv");
       var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
       Accounts = csvReader.GetRecords<Account>().ToList();
+
     }
     public void Save()
     {
@@ -25,6 +55,19 @@ namespace FirstBankOfSuncoast
       var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
       csvWriter.WriteRecords(Accounts);
       writer.Flush();
+    }
+
+
+    public void NewAccount(string name, int balance)
+    {
+      var account = new Account
+      {
+
+        Name = name,
+        Balance = balance
+      };
+      Accounts.Add(account);
+      Save();
     }
 
     public void Display()
@@ -40,6 +83,7 @@ namespace FirstBankOfSuncoast
       deposit += amount;
       Accounts.First(account => account.Name == name).Balance = deposit;
       Console.WriteLine($"Your {name} account has a new balance of {deposit}");
+
       Save();
     }
     public void Withdraw(string withdrawName, int witdrawAmount)
@@ -86,9 +130,10 @@ namespace FirstBankOfSuncoast
 
 
     }
-
   }
+
 }
+
 
 
 
