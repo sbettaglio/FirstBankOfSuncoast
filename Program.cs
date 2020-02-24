@@ -54,7 +54,7 @@ namespace FirstBankOfSuncoast
             Console.WriteLine("Please type in a username:");
             userName = Console.ReadLine().ToLower();
             //checks if username exists and asks you to pick a different username if it does
-            tracker.NameChecker(userName);
+            userName = tracker.NameChecker(userName);
             //deposit into respective accounts
             Console.WriteLine("How much do you want to deposit into your checking account?");
             var checkingBalance = int.Parse(Console.ReadLine());
@@ -69,7 +69,7 @@ namespace FirstBankOfSuncoast
           //existing user login
           Console.WriteLine("What is your username?");
           userName = Console.ReadLine().ToLower();
-          tracker.LogIn(userName);
+          userName = tracker.LogIn(userName);
           empty = false;
         }
 

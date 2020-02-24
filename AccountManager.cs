@@ -83,26 +83,30 @@ namespace FirstBankOfSuncoast
       Accounts.Add(savingAccount);
       Save();
     }
-    public void NameChecker(string userName)
+    public string NameChecker(string userName)
     {
       var exist = Accounts.Any(account => account.UserName == userName);
-      if (exist == true)
+      while (exist == false)
       {
+
         Console.WriteLine("That username already exists. Please type in a different one");
         userName = Console.ReadLine().ToLower();
+        return userName;
       }
+      return userName;
     }
-    public void LogIn(string userName)
+    public string LogIn(string userName)
     {
       var exist = Accounts.Any(account => account.UserName == userName);
       if (exist != true)
       {
         Console.WriteLine("Invalid username. Please try again");
+        userName = Console.ReadLine().ToLower();
+        return userName;
+
       }
-      else if (exist == true)
-      {
-        Console.WriteLine($"Welcome back {userName} !");
-      }
+      return $"Welcome back {userName} !";
+
     }
 
 
